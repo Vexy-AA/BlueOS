@@ -211,6 +211,9 @@ export default defineConfig(({ command, mode }) => {
         '^/logviewer': {
           target: SERVER_ADDRESS,
         },
+        '^/webtools': {
+          target: SERVER_ADDRESS,
+        },
         '^/mavlink': {
           target: SERVER_ADDRESS,
           changeOrigin: true,

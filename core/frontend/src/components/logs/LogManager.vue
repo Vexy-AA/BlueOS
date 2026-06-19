@@ -56,6 +56,15 @@
               <v-icon>mdi-play</v-icon>
             </v-btn>
             <v-btn
+              v-if="item.extension.toLowerCase() === '.bin'"
+              v-tooltip="'Open log in MAGFit (compass calibration)'"
+              icon
+              color="blue"
+              @click="open_in_magfit(item)"
+            >
+              <v-icon>mdi-magnet</v-icon>
+            </v-btn>
+            <v-btn
               v-tooltip="'Download log'"
               icon
               :disabled="deleting"
@@ -190,6 +199,10 @@ export default Vue.extend({
     async replay_log(log: FilebrowserFile): Promise<void> {
       const log_url = encodeURIComponent(await filebrowser.singleFileRelativeURL(log))
       window.open(`/logviewer/#/?file=${log_url}`)
+    },
+    async open_in_magfit(log: FilebrowserFile): Promise<void> {
+      const log_url = encodeURIComponent(await filebrowser.singleFileRelativeURL(log))
+      window.open(`/webtools/MAGFit/?file=${log_url}`)
     },
   },
 })
