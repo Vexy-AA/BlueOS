@@ -8,6 +8,7 @@ TOOLS=(
     ardupilot_tools
     filebrowser
     logviewer
+    webtools
     scripts
     wifi
 )

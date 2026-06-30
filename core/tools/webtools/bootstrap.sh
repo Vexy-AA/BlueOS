@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 set -e
 
-COMMIT="e974f7a9c4d816e2b69df86774bee63747e865d0"
-REPOSITORY_ORG="ArduPilot"          # or your fork (see step 5)
+VERSION="v1.0.0"
+REPOSITORY_ORG="Vexy-AA"
 REPOSITORY_NAME="WebTools"
 PROJECT_NAME="webtools"
-REPOSITORY_URL="https://github.com/Vexy-AA/WebTools.git"
+REPOSITORY_URL="https://github.com/$REPOSITORY_ORG/$REPOSITORY_NAME"
 
-echo "Installing project $PROJECT_NAME @ $COMMIT"
+echo "Installing project $PROJECT_NAME version $VERSION"
+
+ARTIFACT_NAME="$PROJECT_NAME.tar.gz"
+REMOTE_URL="$REPOSITORY_URL/releases/download/$VERSION/$ARTIFACT_NAME"
+echo "Remote URL is $REMOTE_URL"
 
 INSTALL_FOLDER="/var/www/html/$PROJECT_NAME"
 mkdir -p "$INSTALL_FOLDER"
+echo "Installing to $INSTALL_FOLDER"
 
-git clone --recurse-submodules "$REPOSITORY_URL" "$INSTALL_FOLDER"
-git -C "$INSTALL_FOLDER" checkout "$COMMIT"
-git -C "$INSTALL_FOLDER" submodule update --init --recursive
-
-# strip git metadata to shrink the image
-find "$INSTALL_FOLDER" -name ".git*" -prune -exec rm -rf {} +
+wget -q "$REMOTE_URL" -O - | tar -zxf - -C "$INSTALL_FOLDER"
 
 echo "Finished installing $PROJECT_NAME"

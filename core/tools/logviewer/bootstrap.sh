@@ -3,15 +3,15 @@
 # Immediately exit on errors
 set -e
 
-VERSION="v1.0.1"
-REPOSITORY_ORG="Ardupilot"
+VERSION="v1.0.2"
+REPOSITORY_ORG="Vexy-AA"
 REPOSITORY_NAME="UAVLogViewer"
 PROJECT_NAME="logviewer"
 REPOSITORY_URL="https://github.com/$REPOSITORY_ORG/$REPOSITORY_NAME"
 
 echo "Installing project $PROJECT_NAME version $VERSION"
 
-# Step 1: Prepare the download URL
+# Step 1: Prepare the download URL https://github.com/Vexy-AA/UAVLogViewer/releases/download/v1.0.0/logviewer.tar.gz
 
 ARCH="$(uname -m)"
 ARTIFACT_NAME="$PROJECT_NAME.tar.gz"

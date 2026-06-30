@@ -107,9 +107,6 @@ ENV TARGETVARIANT=${TARGETVARIANT}
 COPY tools /home/pi/tools
 RUN /home/pi/tools/install-system-tools.sh
 
-RUN apt update && apt install -y --no-install-recommends git \
-    && /home/pi/tools/webtools/bootstrap.sh \
-    && apt purge -y git && apt autoremove -y && rm -rf /var/lib/apt/lists/*
 # Copy libs and services code
 COPY libs /home/pi/libs
 COPY services /home/pi/services
