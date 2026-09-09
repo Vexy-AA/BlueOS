@@ -3,7 +3,7 @@
 # Immediately exit on errors
 set -e
 
-VERSION="v1.0.2"
+VERSION="v1.0.3"
 REPOSITORY_ORG="Vexy-AA"
 REPOSITORY_NAME="UAVLogViewer"
 PROJECT_NAME="logviewer"
