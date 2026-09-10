@@ -9,34 +9,32 @@ if [ -z "$NOSUDO" ]; then
     $SUDO mkdir -p /root/.config/ardupilot-manager/firmware/logs/
 fi
 
-# Download firmware defaults
-AUTOPILOT_DEFAULT_FIRMWARE_PATH="$HOME/blueos-files/ardupilot-manager/default"
+# Default firmware is intentionally NOT downloaded at build time.
+#
+# Upstream fetches ArduSub for Navigator/Navigator64 (and Pixhawk .apj files that
+# nothing ever reads) from firmware.ardupilot.org here. That host regularly stalls
+# mid-transfer, which made this stage hang for hours under buildx/QEMU.
+#
+# Consequences of not shipping the defaults:
+#   * Serial boards (Pixhawk etc.): none. They never used these files.
+#   * Navigator/Navigator64: on first boot with no firmware installed,
+#     ardupilot_manager logs NoDefaultFirmwareAvailable and waits; install a
+#     firmware from the Autopilot page (it downloads at runtime). The
+#     "Restore default firmware" button returns 404 until you set one via
+#     "Install and make default".
+#
+# Set DOWNLOAD_DEFAULT_FIRMWARE=1 at build time to restore the old behaviour
+# (best effort, with timeouts, never fails the build).
 
-download_if_not_exists() {
-    local url=$1
-    local dest=$2
-
-    if [ ! -f "$dest" ]; then
-        echo "Downloading $url to $dest"
+if [ -n "$DOWNLOAD_DEFAULT_FIRMWARE" ]; then
+    AUTOPILOT_DEFAULT_FIRMWARE_PATH="$HOME/blueos-files/ardupilot-manager/default"
+    for board in navigator navigator64; do
+        dest="$AUTOPILOT_DEFAULT_FIRMWARE_PATH/ardupilot_${board}/ardusub"
         mkdir -p "$(dirname "$dest")"
-        wget -q "$url" -O "$dest" && echo "Downloaded $dest" &
-    else
-        echo "File $dest already exists. Skipping download."
-    fi
-}
+        wget --timeout=30 --tries=3 \
+            "https://firmware.ardupilot.org/Sub/stable-4.5.3/${board}/ardusub" -O "$dest" \
+            || { echo "WARNING: default firmware for ${board} not downloaded"; rm -f "$dest"; }
+    done
+fi
 
-download_if_not_exists "https://firmware.ardupilot.org/Sub/stable-4.5.3/navigator/ardusub" \
-                       "$AUTOPILOT_DEFAULT_FIRMWARE_PATH/ardupilot_navigator/ardusub"
-
-download_if_not_exists "https://firmware.ardupilot.org/Sub/stable-4.5.3/navigator64/ardusub" \
-                       "$AUTOPILOT_DEFAULT_FIRMWARE_PATH/ardupilot_navigator64/ardusub"
-
-download_if_not_exists "https://firmware.ardupilot.org/Sub/stable-4.5.3/Pixhawk1/ardusub.apj" \
-                       "$AUTOPILOT_DEFAULT_FIRMWARE_PATH/ardupilot_pixhawk1/ardusub.apj"
-
-download_if_not_exists "https://firmware.ardupilot.org/Sub/stable-4.5.3/Pixhawk4/ardusub.apj" \
-                       "$AUTOPILOT_DEFAULT_FIRMWARE_PATH/ardupilot_pixhawk4/ardusub.apj"
-
-# Wait for all background jobs to finish
-wait
-echo "All downloads completed."
+echo "ardupilot_tools bootstrap done."

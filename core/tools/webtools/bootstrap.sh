@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-VERSION="v1.0.0"
+VERSION="v1.0.2"
 REPOSITORY_ORG="Vexy-AA"
 REPOSITORY_NAME="WebTools"
 PROJECT_NAME="webtools"
